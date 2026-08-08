@@ -23,14 +23,14 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;-webkit-font-smoothing:antialiased;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;-webkit-font-smoothing:antialiased;overscroll-behavior:none;}
 
-/* Light theme overrides */
 body.light{--bg:#ffffff;--text:#0f1419;--text-dim:#536471;--text-muted:#8899a6;
   --glass:rgba(0,0,0,0.03);--glass-strong:rgba(0,0,0,0.05);--glass-highlight:rgba(0,0,0,0.08);
   --border:rgba(0,0,0,0.1);--border-strong:rgba(0,0,0,0.15);
   --shadow-glass:0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);}
 body.light .blob{opacity:.35;}
+body.modal-open{overflow:hidden;position:fixed;width:100%;}
 
 .bg-mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
 .blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.55;animation:drift 24s ease-in-out infinite;}
@@ -43,7 +43,7 @@ body::after{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;b
 .glass{background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:1px solid var(--border);box-shadow:var(--shadow-glass);}
 .glass-strong{background:var(--glass-strong);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border:1px solid var(--border-strong);box-shadow:var(--shadow-glass);}
 #app{position:relative;z-index:1;height:100vh;display:grid;grid-template-columns:275px minmax(0,600px) 350px;justify-content:center;gap:0;}
-aside.sidebar{height:100vh;padding:12px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;background:rgba(0,0,0,0.35);backdrop-filter:blur(12px);}
+aside.sidebar{height:100vh;padding:12px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;background:rgba(0,0,0,0.35);backdrop-filter:blur(12px);overflow-y:auto;}
 body.light aside.sidebar{background:rgba(255,255,255,0.35);}
 .brand{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:8px;}
 .brand-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1d9bf0,#6a5acd);display:grid;place-items:center;color:#fff;font-weight:900;font-size:18px;box-shadow:0 0 20px rgba(29,155,240,.5);}
@@ -64,21 +64,24 @@ body.light aside.sidebar{background:rgba(255,255,255,0.35);}
 .profile-card .more{margin-left:auto;color:var(--text-dim);font-size:18px;}
 main.col-main{height:100vh;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:rgba(0,0,0,0.2);}
 body.light main.col-main{background:rgba(255,255,255,0.2);}
-.col-header{padding:0 16px;height:53px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);position:sticky;top:0;z-index:5;}
+.col-header{padding:0 16px;height:53px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);position:sticky;top:0;z-index:5;flex-shrink:0;}
 body.light .col-header{background:rgba(255,255,255,0.7);}
 .col-header h2{font-size:20px;font-weight:700;}
-.col-header .back-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:none;color:var(--text);cursor:pointer;font-size:18px;transition:background .2s;}
+.col-header .back-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:none;color:var(--text);cursor:pointer;font-size:18px;transition:background .2s;display:grid;place-items:center;}
 .col-header .back-btn:hover{background:var(--glass-strong);}
 .col-tabs{display:flex;margin-left:auto;}
 .col-tab{padding:16px 20px;cursor:pointer;color:var(--text-dim);font-weight:500;font-size:15px;position:relative;}
 .col-tab:hover{background:var(--glass);}
 .col-tab.active{color:var(--text);font-weight:700;}
 .col-tab.active::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:4px;border-radius:999px;background:linear-gradient(90deg,#1d9bf0,#6a5acd);}
-.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;}
-.scroll-area::-webkit-scrollbar{width:0;}
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+.scroll-area::-webkit-scrollbar{width:6px;}
+.scroll-area::-webkit-scrollbar-track{background:transparent;}
+.scroll-area::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px;}
+.scroll-area::-webkit-scrollbar-thumb:hover{background:var(--text-dim);}
 .composer{display:flex;gap:12px;padding:16px;border-bottom:1px solid var(--border);}
 .composer .avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;border:1.5px solid var(--border-strong);object-fit:cover;}
-.composer-body{flex:1;display:flex;flex-direction:column;}
+.composer-body{flex:1;display:flex;flex-direction:column;min-width:0;}
 .composer-input{background:transparent;border:none;outline:none;resize:none;font-size:20px;color:var(--text);min-height:52px;font-family:inherit;padding:12px 0;}
 .composer-input::placeholder{color:var(--text-muted);}
 .composer-toolbar{display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid var(--border);margin-top:4px;}
@@ -115,8 +118,10 @@ body.light .col-header{background:rgba(255,255,255,0.7);}
 .empty-state .empty-icon{font-size:64px;margin-bottom:16px;}
 .empty-state h3{color:var(--text);font-size:22px;margin-bottom:8px;font-weight:800;}
 .empty-state p{font-size:15px;max-width:320px;margin:0 auto 20px;line-height:1.5;}
-aside.col-right{height:100vh;overflow-y:auto;padding:12px;}
-aside.col-right::-webkit-scrollbar{width:0;}
+aside.col-right{height:100vh;overflow-y:auto;padding:12px;scroll-behavior:smooth;overscroll-behavior:contain;}
+aside.col-right::-webkit-scrollbar{width:6px;}
+aside.col-right::-webkit-scrollbar-track{background:transparent;}
+aside.col-right::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px;}
 .search-box{position:sticky;top:0;padding:0 0 12px;z-index:4;background:rgba(0,0,0,0.5);backdrop-filter:blur(20px);}
 body.light .search-box{background:rgba(255,255,255,0.7);}
 .search-wrap{display:flex;align-items:center;gap:12px;padding:0 16px;height:44px;border-radius:999px;background:var(--glass-strong);border:1px solid var(--border);}
@@ -131,11 +136,15 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 .trend-title{font-weight:700;margin:2px 0;font-size:15px;}
 .trend-count{font-size:12px;color:var(--text-dim);}
 .who-follow{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
-.who-follow .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;}
+.who-follow:last-child{border-bottom:none;}
+.who-follow:hover{background:var(--glass-strong);}
+.who-follow .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;}
 .who-follow .info{flex:1;min-width:0;}
-.who-follow .name{font-weight:700;font-size:14px;}
+.who-follow .name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .who-follow .handle{font-size:13px;color:var(--text-dim);}
-.follow-btn{padding:6px 16px;border-radius:999px;border:none;background:#fff;color:#000;font-weight:700;font-size:14px;cursor:pointer;}
+.follow-btn{padding:6px 16px;border-radius:999px;border:none;background:#fff;color:#000;font-weight:700;font-size:14px;cursor:pointer;flex-shrink:0;transition:all .2s;}
+.follow-btn:hover{filter:brightness(.9);}
+.follow-btn.following{background:transparent;color:var(--text);border:1px solid var(--border-strong);}
 .footer-links{padding:12px 16px;font-size:13px;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:8px 12px;}
 .footer-links a{color:var(--text-muted);text-decoration:none;}
 .modal-overlay{position:fixed;inset:0;background:rgba(91,112,131,0.4);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;}
@@ -151,7 +160,9 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 .divider-row{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text-dim);font-size:14px;}
 .divider-row::before,.divider-row::after{content:"";flex:1;height:1px;background:var(--border-strong);}
 .chat-view,.dm-view{display:flex;flex-direction:column;height:100%;}
-.chat-list{flex:1;overflow-y:auto;padding:8px;}
+.chat-list{flex:1;overflow-y:auto;padding:8px;scroll-behavior:smooth;}
+.chat-list::-webkit-scrollbar{width:6px;}
+.chat-list::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px;}
 .chat-row{display:flex;gap:12px;padding:12px;border-radius:12px;cursor:pointer;}
 .chat-row:hover{background:var(--glass-strong);}
 .chat-row .avatar{width:48px;height:48px;border-radius:50%;flex-shrink:0;object-fit:cover;}
@@ -160,15 +171,15 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 .chat-row .name{font-weight:700;font-size:15px;}
 .chat-row .time{font-size:13px;color:var(--text-dim);}
 .chat-row .preview{font-size:14px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.dm-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;}
+.dm-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;scroll-behavior:smooth;}
 .dm-msg{max-width:75%;padding:10px 14px;border-radius:18px;font-size:15px;}
 .dm-msg.them{align-self:flex-start;background:var(--glass-strong);border:1px solid var(--border);border-bottom-left-radius:4px;}
 .dm-msg.me{align-self:flex-end;color:#fff;background:linear-gradient(135deg,#1d9bf0,#3aa8f5);border-bottom-right-radius:4px;}
-.dm-input-area{padding:10px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.4);display:flex;gap:10px;}
+.dm-input-area{padding:10px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.4);display:flex;gap:10px;flex-shrink:0;}
 .dm-input{flex:1;padding:12px 18px;border-radius:999px;background:var(--glass-strong);border:1px solid var(--border);color:var(--text);font-size:15px;outline:none;}
 .dm-send{width:38px;height:38px;border-radius:50%;border:none;background:var(--accent);color:#fff;cursor:pointer;display:grid;place-items:center;}
 .profile-view{display:flex;flex-direction:column;}
-.profile-banner{height:200px;background:linear-gradient(135deg,rgba(29,155,240,.3),rgba(249,24,128,.3));}
+.profile-banner{height:200px;background:linear-gradient(135deg,rgba(29,155,240,.3),rgba(249,24,128,.3));position:relative;flex-shrink:0;}
 .profile-info{padding:12px 16px 16px;position:relative;}
 .profile-info .avatar-wrap{position:absolute;top:-68px;left:16px;width:134px;height:134px;cursor:pointer;}
 .profile-info .avatar-wrap .avatar{width:134px;height:134px;border-radius:50%;border:4px solid #000;object-fit:cover;}
@@ -183,17 +194,17 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 .profile-stats{display:flex;gap:20px;margin-top:12px;font-size:14px;}
 .profile-stats b{color:var(--text);font-weight:700;}
 .profile-stats span{color:var(--text-dim);}
-.profile-tabs{display:flex;border-bottom:1px solid var(--border);}
+.profile-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
 .profile-tab{flex:1;text-align:center;padding:16px;cursor:pointer;color:var(--text-dim);position:relative;}
 .profile-tab:hover{background:var(--glass);}
 .profile-tab.active{color:var(--text);font-weight:700;}
 .profile-tab.active::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:4px;border-radius:999px;background:var(--accent);}
 
-/* ====== SETTINGS VIEW ====== */
+/* Settings */
 .settings-view{display:flex;flex-direction:column;}
 .settings-section{padding:16px 20px;border-bottom:1px solid var(--border);}
 .settings-section:last-child{border-bottom:none;}
-.settings-section h3{font-size:15px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;font-size:12px;}
+.settings-section h3{font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
 .setting-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px;cursor:pointer;transition:opacity .2s;}
 .setting-item:hover{opacity:.85;}
 .setting-item .s-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
@@ -203,16 +214,12 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 .setting-item .s-desc{font-size:13px;color:var(--text-dim);margin-top:2px;}
 .setting-item .s-value{color:var(--text-dim);font-size:14px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .setting-item .s-chevron{color:var(--text-dim);flex-shrink:0;}
-
-/* Toggle switch */
 .toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
 .toggle input{opacity:0;width:0;height:0;}
 .toggle .slider{position:absolute;inset:0;background:var(--glass-strong);border:1px solid var(--border-strong);border-radius:999px;cursor:pointer;transition:.25s;}
 .toggle .slider::before{content:"";position:absolute;height:16px;width:16px;left:3px;top:2px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 2px 4px rgba(0,0,0,.3);}
 .toggle input:checked + .slider{background:var(--accent);border-color:var(--accent);}
 .toggle input:checked + .slider::before{transform:translateX(20px);}
-
-/* Edit profile modal */
 .edit-modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:150;display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
 .edit-modal.open{display:flex;}
 .edit-modal-card{width:100%;max-width:560px;border-radius:16px;background:var(--bg);border:1px solid var(--border-strong);box-shadow:0 20px 60px rgba(0,0,0,0.6);overflow:hidden;}
@@ -234,14 +241,9 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 .field input:focus,.field textarea:focus{border-color:var(--accent);}
 .field textarea{resize:vertical;min-height:80px;}
 .field .counter{font-size:11px;color:var(--text-dim);text-align:right;margin-top:4px;}
-.field.warn input,.field.warn textarea{border-color:var(--danger);}
-
-/* Danger zone */
 .danger-item .s-icon{background:rgba(244,33,46,.1);border-color:rgba(244,33,46,.3);}
 .danger-item .s-icon svg{color:var(--danger);}
 .danger-item .s-label{color:var(--danger);}
-
-/* Confirm dialog */
 .confirm-dialog{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
 .confirm-dialog.open{display:flex;}
 .confirm-card{background:var(--bg);border:1px solid var(--border-strong);border-radius:16px;padding:24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
@@ -252,7 +254,6 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 .btn-cancel{background:var(--glass-strong);border:1px solid var(--border-strong) !important;color:var(--text);}
 .btn-danger{background:var(--danger);color:#fff;}
 .btn-primary{background:var(--accent);color:#fff;}
-
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);padding:12px 20px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:14px;box-shadow:0 6px 30px rgba(29,155,240,.5);z-index:200;opacity:0;transition:.4s cubic-bezier(.2,.7,.3,1);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .avatar{object-fit:cover;}
@@ -260,6 +261,16 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 @keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
 .pop{animation:pop .35s ease;}
 .hidden-input{position:absolute;opacity:0;pointer-events:none;width:0;height:0;}
+
+/* Skeleton loader for follow counts */
+.skeleton{display:inline-block;background:var(--glass-strong);border-radius:4px;animation:skeleton-pulse 1.4s ease-in-out infinite;}
+@keyframes skeleton-pulse{0%,100%{opacity:.4;}50%{opacity:.8;}}
+
+/* Profile view scroll parallax for banner */
+#view-profile .scroll-area{position:relative;}
+.profile-banner{will-change:transform;}
+
+/* Mobile fixes */
 @media (max-width:1280px){
   #app{grid-template-columns:88px minmax(0,600px) 350px;}
   .nav-item .label,.brand-name,.profile-card .name,.profile-card .handle,.profile-card .more{display:none;}
@@ -377,8 +388,8 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
         <button class="back-btn" onclick="app.switchNav('home')">←</button>
         <div><h2 id="prof-head-name">You</h2><div style="font-size:13px;color:var(--text-dim);" id="prof-head-posts">0 posts</div></div>
       </div>
-      <div class="scroll-area">
-        <div class="profile-banner"></div>
+      <div class="scroll-area" id="profile-scroll">
+        <div class="profile-banner" id="profile-banner"></div>
         <div class="profile-info">
           <div class="avatar-wrap" onclick="settings.openEdit()" title="Edit profile">
             <img class="avatar" id="prof-avatar" src="">
@@ -390,19 +401,20 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
           <div class="profile-name-row"><span class="name" id="prof-name">You</span></div>
           <div class="profile-handle" id="prof-handle">@you</div>
           <div class="profile-bio" id="prof-bio">Just a student vibing on campus.</div>
-          <div class="profile-meta"><span>📍 <span id="prof-major">Student</span></span><span>📅 Joined August 2026</span></div>
-          <div class="profile-stats"><div><b id="prof-following">142</b> <span>Following</span></div><div><b id="prof-followers">89</b> <span>Followers</span></div></div>
+          <div class="profile-meta"><span>📍 <span id="prof-major">Student</span></span><span id="prof-joined">📅 Joined August 2026</span></div>
+          <div class="profile-stats">
+            <div><b id="prof-following">0</b> <span>Following</span></div>
+            <div><b id="prof-followers">0</b> <span>Followers</span></div>
+          </div>
         </div>
         <div class="profile-tabs"><div class="profile-tab active">Posts</div><div class="profile-tab">Replies</div><div class="profile-tab">Media</div><div class="profile-tab">Likes</div></div>
         <div id="prof-posts"></div>
       </div>
     </div>
 
-    <!-- ====== SETTINGS VIEW ====== -->
     <div id="view-settings" class="settings-view hidden">
       <div class="col-header"><h2>Settings</h2></div>
       <div class="scroll-area">
-
         <div class="settings-section">
           <h3>Your Account</h3>
           <div class="setting-item" onclick="settings.openEdit()">
@@ -444,13 +456,6 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
             </div>
             <label class="toggle"><input type="checkbox" id="notif-toggle" checked onchange="settings.toggleNotif(this.checked)"><span class="slider"></span></label>
           </div>
-          <div class="setting-item">
-            <div class="s-left">
-              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
-              <div><div class="s-label">Message requests</div><div class="s-desc">Allow messages from anyone on campus</div></div>
-            </div>
-            <label class="toggle"><input type="checkbox" id="msg-toggle" checked onchange="settings.toggleMsg(this.checked)"><span class="slider"></span></label>
-          </div>
         </div>
 
         <div class="settings-section">
@@ -461,13 +466,6 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
               <div><div class="s-label">Private profile</div><div class="s-desc">Only followers see your posts</div></div>
             </div>
             <label class="toggle"><input type="checkbox" id="private-toggle" onchange="settings.togglePrivate(this.checked)"><span class="slider"></span></label>
-          </div>
-          <div class="setting-item">
-            <div class="s-left">
-              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-              <div><div class="s-label">Show email publicly</div><div class="s-desc">Display email on your profile</div></div>
-            </div>
-            <label class="toggle"><input type="checkbox" id="emailpub-toggle" onchange="settings.toggleEmailPub(this.checked)"><span class="slider"></span></label>
           </div>
         </div>
 
@@ -499,7 +497,6 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
             <span class="s-chevron">›</span>
           </div>
         </div>
-
       </div>
     </div>
   </main>
@@ -507,7 +504,10 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
   <aside class="col-right">
     <div class="search-box"><div class="search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Search campus"></div></div>
     <div class="panel glass"><div class="panel-head">What's happening</div><div id="trending-list"></div></div>
-    <div class="panel glass"><div class="panel-head">Who to follow</div><div id="follow-list"></div></div>
+    <div class="panel glass">
+      <div class="panel-head">Who to follow</div>
+      <div id="follow-list"><div class="loading-state" style="padding:30px;font-size:13px;">Looking for people…</div></div>
+    </div>
     <div class="footer-links"><a href="#">Terms</a><a href="#">Privacy</a><a href="#">About</a><div style="flex-basis:100%;">© 2026 CampusX · v1.0</div></div>
   </aside>
 </div>
@@ -526,7 +526,7 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 </div>
 
 <!-- Edit profile modal -->
-<div class="edit-modal" id="edit-modal">
+<div class="edit-modal" id="edit-modal" onclick="if(event.target===this)settings.closeEdit()">
   <div class="edit-modal-card">
     <div class="edit-header">
       <button onclick="settings.closeEdit()">✕</button>
@@ -542,31 +542,16 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
         </div>
         <div class="avatar-hint">Click the camera to change your photo</div>
       </div>
-      <div class="field">
-        <label>Name</label>
-        <input id="edit-name" maxlength="30" placeholder="Your name">
-        <div class="counter"><span id="name-count">0</span>/30</div>
-      </div>
-      <div class="field">
-        <label>Handle</label>
-        <input id="edit-handle" maxlength="15" placeholder="username">
-        <div class="counter"><span id="handle-count">0</span>/15</div>
-      </div>
-      <div class="field">
-        <label>Bio</label>
-        <textarea id="edit-bio" maxlength="160" placeholder="Tell campus about yourself"></textarea>
-        <div class="counter"><span id="bio-count">0</span>/160</div>
-      </div>
-      <div class="field">
-        <label>Major / Role</label>
-        <input id="edit-major" maxlength="40" placeholder="e.g. Computer Science">
-      </div>
+      <div class="field"><label>Name</label><input id="edit-name" maxlength="30" placeholder="Your name"><div class="counter"><span id="name-count">0</span>/30</div></div>
+      <div class="field"><label>Handle</label><input id="edit-handle" maxlength="15" placeholder="username"><div class="counter"><span id="handle-count">0</span>/15</div></div>
+      <div class="field"><label>Bio</label><textarea id="edit-bio" maxlength="160" placeholder="Tell campus about yourself"></textarea><div class="counter"><span id="bio-count">0</span>/160</div></div>
+      <div class="field"><label>Major / Role</label><input id="edit-major" maxlength="40" placeholder="e.g. Computer Science"></div>
     </div>
   </div>
 </div>
 
 <!-- Confirm dialog -->
-<div class="confirm-dialog" id="confirm-dialog">
+<div class="confirm-dialog" id="confirm-dialog" onclick="if(event.target===this)settings.closeConfirm()">
   <div class="confirm-card">
     <h3 id="confirm-title">Are you sure?</h3>
     <p id="confirm-msg">This action cannot be undone.</p>
@@ -578,7 +563,7 @@ body.light .search-box{background:rgba(255,255,255,0.7);}
 </div>
 
 <!-- About dialog -->
-<div class="confirm-dialog" id="about-dialog">
+<div class="confirm-dialog" id="about-dialog" onclick="if(event.target===this)utils.$('#about-dialog').classList.remove('open')">
   <div class="confirm-card" style="text-align:center;">
     <div style="font-size:40px;margin-bottom:10px;">🎓</div>
     <h3>CampusX</h3>
@@ -602,7 +587,7 @@ if (typeof firebaseConfig === 'undefined') {
 }
 const auth = firebase.auth();
 const db = firebase.firestore();
-db.enablePersistence({ synchronizeTabs: true }).catch(err => console.warn('Persistence failed:', err.code));
+db.enablePersistence({ synchronizeTabs: true }).catch(err => console.warn('Persistence:', err.code));
 
 // ========== UTILS ==========
 const utils = {
@@ -624,6 +609,11 @@ const utils = {
     if (d < 86400) return Math.floor(d/3600) + 'h';
     return Math.floor(d/86400) + 'd';
   },
+  fmtDate(ts) {
+    if (!ts) return '';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  },
   toast(msg) {
     const t = this.$('#toast');
     t.textContent = msg;
@@ -637,7 +627,9 @@ const utils = {
   getAvatar(user) {
     if (!user) return this.fallbackAvatar('user');
     return user.photoURL || user.avatarUrl || this.fallbackAvatar(user.displayName || user.handle);
-  }
+  },
+  lockBodyScroll() { document.body.classList.add('modal-open'); },
+  unlockBodyScroll() { document.body.classList.remove('modal-open'); }
 };
 
 // ========== AUTH ==========
@@ -657,6 +649,8 @@ const authModule = {
         feed.startListener();
         chat.loadInbox();
         settings.updateSettingsUI();
+        follows.loadRealSuggestions();
+        follows.refreshMyCounts();
       } else {
         this.currentUser = null;
         this.userProfile = null;
@@ -683,7 +677,7 @@ const authModule = {
         bio: '',
         isAnonymous: user.isAnonymous || false,
         authProvider: user.isAnonymous ? 'guest' : 'google',
-        prefs: { theme: 'dark', notifications: true, messages: true, private: false, emailPublic: false },
+        prefs: { theme: 'dark', notifications: true, private: false },
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     }
@@ -707,10 +701,7 @@ const authModule = {
   },
 
   signInGoogle() {
-    auth.signInWithPopup(this.provider).catch(err => {
-      console.error(err);
-      utils.toast('Sign-in failed: ' + err.message);
-    });
+    auth.signInWithPopup(this.provider).catch(err => utils.toast('Sign-in failed: ' + err.message));
   },
 
   signInAnonymously() {
@@ -726,14 +717,24 @@ const authModule = {
   async deleteAccount() {
     const uid = this.currentUser.uid;
     try {
-      // Delete all posts by this user
       const postsSnap = await db.collection('posts').where('authorUid', '==', uid).get();
+      const followingSnap = await db.collection(`users/${uid}/following`).get();
+      const followersSnap = await db.collection(`users/${uid}/followers`).get();
       const batch = db.batch();
       postsSnap.docs.forEach(d => batch.delete(d.ref));
-      // Delete user doc
+      followingSnap.docs.forEach(d => {
+        batch.delete(d.ref);
+        // Also remove from the other user's followers
+        const targetUid = d.id;
+        batch.delete(db.doc(`users/${targetUid}/followers/${uid}`));
+      });
+      followersSnap.docs.forEach(d => {
+        batch.delete(d.ref);
+        const followerUid = d.id;
+        batch.delete(db.doc(`users/${followerUid}/following/${uid}`));
+      });
       batch.delete(db.collection('users').doc(uid));
       await batch.commit();
-      // Delete Firebase auth account
       await this.currentUser.delete();
       utils.toast('Account deleted');
     } catch (err) {
@@ -743,9 +744,139 @@ const authModule = {
   }
 };
 
-// ========== SETTINGS (NEW!) ==========
+// ========== FOLLOWS (NEW - Real system) ==========
+const follows = {
+  myFollowing: new Set(), // set of uids I follow
+  myFollowers: new Set(),
+  followingUnsub: null,
+  followersUnsub: null,
+
+  // Live listener for MY following list
+  startMyListeners() {
+    if (!authModule.currentUser) return;
+    const uid = authModule.currentUser.uid;
+
+    if (this.followingUnsub) this.followingUnsub();
+    if (this.followersUnsub) this.followersUnsub();
+
+    this.followingUnsub = db.collection(`users/${uid}/following`)
+      .onSnapshot(snap => {
+        this.myFollowing = new Set(snap.docs.map(d => d.id));
+        this.refreshMyCounts();
+        // Refresh suggestion list since who I follow changed
+        this.loadRealSuggestions();
+      });
+
+    this.followersUnsub = db.collection(`users/${uid}/followers`)
+      .onSnapshot(snap => {
+        this.myFollowers = new Set(snap.docs.map(d => d.id));
+        this.refreshMyCounts();
+      });
+  },
+
+  async refreshMyCounts() {
+    if (!authModule.currentUser) return;
+    utils.$('#prof-following').textContent = this.myFollowing.size;
+    utils.$('#prof-followers').textContent = this.myFollowers.size;
+  },
+
+  amFollowing(uid) {
+    return this.myFollowing.has(uid);
+  },
+
+  async toggleFollow(targetUid, btn) {
+    if (!authModule.currentUser) return;
+    if (targetUid === authModule.currentUser.uid) return;
+
+    const myUid = authModule.currentUser.uid;
+    const wasFollowing = this.amFollowing(targetUid);
+    const ts = firebase.firestore.FieldValue.serverTimestamp();
+
+    // Optimistic UI
+    if (btn) {
+      btn.disabled = true;
+    }
+
+    try {
+      const batch = db.batch();
+      if (wasFollowing) {
+        batch.delete(db.doc(`users/${myUid}/following/${targetUid}`));
+        batch.delete(db.doc(`users/${targetUid}/followers/${myUid}`));
+      } else {
+        batch.set(db.doc(`users/${myUid}/following/${targetUid}`), { followedAt: ts });
+        batch.set(db.doc(`users/${targetUid}/followers/${myUid}`), { followedAt: ts });
+      }
+      await batch.commit();
+      // myFollowing set updates via listener
+    } catch (err) {
+      console.error(err);
+      utils.toast('Could not update follow');
+      if (btn) btn.disabled = false;
+    }
+  },
+
+  // Fetch real users from Firestore to suggest
+  async loadRealSuggestions() {
+    const list = utils.$('#follow-list');
+    if (!list || !authModule.currentUser) return;
+
+    list.innerHTML = '<div class="loading-state" style="padding:30px;font-size:13px;">Looking for people…</div>';
+
+    try {
+      // Get up to 10 users
+      const snap = await db.collection('users')
+        .where('uid', '!=', authModule.currentUser.uid)
+        .limit(10)
+        .get();
+
+      // Note: != query needs a composite index. If it fails, fall back to fetching all.
+      let users = snap.docs.map(d => d.data()).filter(u => u.uid !== authModule.currentUser.uid);
+
+      // Fallback: if the query failed or returned nothing, get all users
+      if (users.length === 0) {
+        const allSnap = await db.collection('users').limit(20).get();
+        users = allSnap.docs.map(d => d.data()).filter(u => u.uid !== authModule.currentUser.uid);
+      }
+
+      // Exclude people I already follow
+      const suggestions = users.filter(u => !this.myFollowing.has(u.uid)).slice(0, 5);
+
+      if (suggestions.length === 0) {
+        list.innerHTML = `<div class="empty-state" style="padding:30px 16px;"><div class="empty-icon" style="font-size:32px;">👥</div><h3 style="font-size:16px;">No suggestions yet</h3><p style="font-size:13px;">Invite friends to CampusX and they'll appear here.</p></div>`;
+        return;
+      }
+
+      list.innerHTML = suggestions.map(u => {
+        const avatar = u.avatarUrl || u.photoURL || utils.fallbackAvatar(u.displayName);
+        return `
+          <div class="who-follow" data-uid="${u.uid}">
+            <img class="avatar" src="${avatar}">
+            <div class="info">
+              <div class="name">${utils.escapeHTML(u.displayName)}</div>
+              <div class="handle">@${utils.escapeHTML(u.handle)}</div>
+            </div>
+            <button class="follow-btn" data-action="follow" data-uid="${u.uid}">Follow</button>
+          </div>`;
+      }).join('');
+
+      list.querySelectorAll('.follow-btn').forEach(b => {
+        b.onclick = async (e) => {
+          e.stopPropagation();
+          const uid = b.dataset.uid;
+          await this.toggleFollow(uid, b);
+          // Button state updates via listener -> loadRealSuggestions
+        };
+      });
+    } catch (err) {
+      console.error('loadRealSuggestions error:', err);
+      list.innerHTML = `<div class="empty-state" style="padding:30px 16px;"><h3 style="font-size:15px;">Could not load suggestions</h3><p style="font-size:13px;">Make sure Firestore rules allow reading the users collection.</p></div>`;
+    }
+  }
+};
+
+// ========== SETTINGS ==========
 const settings = {
-  tempAvatar: null, // base64 of pending avatar upload
+  tempAvatar: null,
 
   updateSettingsUI() {
     const p = authModule.userProfile;
@@ -755,14 +886,10 @@ const settings = {
     utils.$('#settings-email').textContent = u.email ? 'Verified email on file' : 'No email (guest)';
     utils.$('#settings-auth-val').textContent = p.authProvider === 'google' ? 'Google' : 'Guest';
     utils.$('#settings-auth-desc').textContent = p.authProvider === 'google' ? 'Signed in with Google' : 'Anonymous guest account';
-    // Load preferences
     const prefs = p.prefs || {};
     utils.$('#theme-toggle').checked = prefs.theme === 'light';
     utils.$('#notif-toggle').checked = prefs.notifications !== false;
-    utils.$('#msg-toggle').checked = prefs.messages !== false;
     utils.$('#private-toggle').checked = prefs.private === true;
-    utils.$('#emailpub-toggle').checked = prefs.emailPublic === true;
-    // Apply theme
     document.body.classList.toggle('light', prefs.theme === 'light');
   },
 
@@ -784,19 +911,9 @@ const settings = {
     utils.toast(on ? 'Notifications on' : 'Notifications off');
   },
 
-  toggleMsg(on) {
-    this.savePrefs({ messages: on });
-    utils.toast(on ? 'Messages from anyone' : 'Messages from followers only');
-  },
-
   togglePrivate(on) {
     this.savePrefs({ private: on });
     utils.toast(on ? 'Profile is now private' : 'Profile is public');
-  },
-
-  toggleEmailPub(on) {
-    this.savePrefs({ emailPublic: on });
-    utils.toast(on ? 'Email visible on profile' : 'Email hidden');
   },
 
   openEdit() {
@@ -810,7 +927,7 @@ const settings = {
     this.tempAvatar = null;
     this.updateCounters();
     utils.$('#edit-modal').classList.add('open');
-    // Wire up counters
+    utils.lockBodyScroll();
     ['name','handle','bio'].forEach(f => {
       const el = utils.$('#edit-' + f);
       el.oninput = () => this.updateCounters();
@@ -819,6 +936,7 @@ const settings = {
 
   closeEdit() {
     utils.$('#edit-modal').classList.remove('open');
+    utils.unlockBodyScroll();
   },
 
   updateCounters() {
@@ -865,26 +983,21 @@ const settings = {
     }
   },
 
-  openAbout() {
-    utils.$('#about-dialog').classList.add('open');
-  },
-
+  openAbout() { utils.$('#about-dialog').classList.add('open'); utils.lockBodyScroll(); },
   confirmDelete() {
     utils.$('#confirm-title').textContent = 'Delete your account?';
-    utils.$('#confirm-msg').textContent = 'This will permanently delete your profile, all your posts, and all your likes. This cannot be undone.';
+    utils.$('#confirm-msg').textContent = 'This will permanently delete your profile, all your posts, all your followers, and all your follows. This cannot be undone.';
     utils.$('#confirm-action').textContent = 'Delete account';
     utils.$('#confirm-action').onclick = () => this.doDelete();
     utils.$('#confirm-dialog').classList.add('open');
+    utils.lockBodyScroll();
   },
-
   async doDelete() {
     utils.$('#confirm-dialog').classList.remove('open');
+    utils.unlockBodyScroll();
     await authModule.deleteAccount();
   },
-
-  closeConfirm() {
-    utils.$('#confirm-dialog').classList.remove('open');
-  }
+  closeConfirm() { utils.$('#confirm-dialog').classList.remove('open'); utils.unlockBodyScroll(); }
 };
 
 // ========== FEED ==========
@@ -1085,8 +1198,27 @@ const app = {
   init() {
     authModule.init();
     this.renderTrends();
-    this.renderFollows();
+    this.setupProfileScroll();
   },
+
+  setupProfileScroll() {
+    // Parallax: banner moves slower than scroll
+    document.addEventListener('scroll', (e) => {
+      const scroller = e.target;
+      if (!scroller || scroller.id !== 'profile-scroll') return;
+      const banner = utils.$('#profile-banner');
+      if (!banner) return;
+      const y = scroller.scrollTop;
+      if (y > 0) {
+        banner.style.transform = `translateY(${y * 0.4}px)`;
+        banner.style.opacity = Math.max(0.2, 1 - y / 400);
+      } else {
+        banner.style.transform = '';
+        banner.style.opacity = '';
+      }
+    }, true);
+  },
+
   updateUserUI() {
     const u = authModule.currentUser, p = authModule.userProfile;
     if (!u || !p) return;
@@ -1101,7 +1233,12 @@ const app = {
     utils.$('#prof-major').textContent = p.major || 'Student';
     utils.$('#prof-bio').textContent = p.bio || 'Just a student vibing on campus.';
     utils.$('#prof-head-name').textContent = p.displayName;
+    utils.$('#prof-joined').textContent = '📅 Joined ' + utils.fmtDate(p.createdAt);
+
+    // Start follow listeners (idempotent)
+    follows.startMyListeners();
   },
+
   switchNav(view) {
     utils.$$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === view));
     ['home','chat','dm','explore','notifications','profile','settings'].forEach(v => {
@@ -1127,22 +1264,6 @@ const app = {
   renderExploreTrends() {
     const list = utils.$('#explore-trends'); if (!list) return;
     list.innerHTML = utils.$('#trending-list').innerHTML;
-  },
-  renderFollows() {
-    const list = utils.$('#follow-list'); if (!list) return;
-    const follows = [
-      { name:'Campus Daily', handle:'@campusdaily' },
-      { name:'The Quad Times', handle:'@quadtimes' },
-      { name:'Residence Life', handle:'@reslife' }
-    ];
-    list.innerHTML = follows.map(f => `
-      <div class="who-follow"><img class="avatar" src="${utils.fallbackAvatar(f.name)}"><div class="info"><div class="name">${f.name}</div><div class="handle">${f.handle}</div></div><button class="follow-btn">Follow</button></div>`).join('');
-    list.querySelectorAll('.follow-btn').forEach(b => {
-      b.onclick = () => {
-        if (b.classList.contains('following')) { b.classList.remove('following'); b.textContent='Follow'; }
-        else { b.classList.add('following'); b.textContent='Following'; utils.toast('Following'); }
-      };
-    });
   },
   async renderProfile() {
     if (!authModule.userProfile) return;
