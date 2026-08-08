@@ -5,14 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Campus X — Liquid Glass</title>
 
-<!-- Firebase (compat build) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.js"></script>
 <link rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css">
-
-<!-- YOUR Firebase config -->
 <script src="firebase-config.js"></script>
 
 <style>
@@ -22,10 +19,19 @@
   --border-strong:rgba(255,255,255,0.14);--text:#f7f7f7;--text-dim:#8b8b95;
   --text-muted:#5a5a63;--accent:#1d9bf0;--like:#f91880;--repost:#00ba7c;
   --blur:22px;--shadow-glass:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+  --danger:#f4212e;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;-webkit-font-smoothing:antialiased;}
+
+/* Light theme overrides */
+body.light{--bg:#ffffff;--text:#0f1419;--text-dim:#536471;--text-muted:#8899a6;
+  --glass:rgba(0,0,0,0.03);--glass-strong:rgba(0,0,0,0.05);--glass-highlight:rgba(0,0,0,0.08);
+  --border:rgba(0,0,0,0.1);--border-strong:rgba(0,0,0,0.15);
+  --shadow-glass:0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);}
+body.light .blob{opacity:.35;}
+
 .bg-mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
 .blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.55;animation:drift 24s ease-in-out infinite;}
 .blob.b1{width:520px;height:520px;background:radial-gradient(circle,#1d9bf0,#6a5acd);top:-10%;left:-8%;}
@@ -38,6 +44,7 @@ body::after{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;b
 .glass-strong{background:var(--glass-strong);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border:1px solid var(--border-strong);box-shadow:var(--shadow-glass);}
 #app{position:relative;z-index:1;height:100vh;display:grid;grid-template-columns:275px minmax(0,600px) 350px;justify-content:center;gap:0;}
 aside.sidebar{height:100vh;padding:12px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;background:rgba(0,0,0,0.35);backdrop-filter:blur(12px);}
+body.light aside.sidebar{background:rgba(255,255,255,0.35);}
 .brand{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:8px;}
 .brand-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1d9bf0,#6a5acd);display:grid;place-items:center;color:#fff;font-weight:900;font-size:18px;box-shadow:0 0 20px rgba(29,155,240,.5);}
 .brand-name{font-weight:800;font-size:18px;}
@@ -56,7 +63,9 @@ aside.sidebar{height:100vh;padding:12px;border-right:1px solid var(--border);dis
 .profile-card .handle{font-size:13px;color:var(--text-dim);}
 .profile-card .more{margin-left:auto;color:var(--text-dim);font-size:18px;}
 main.col-main{height:100vh;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:rgba(0,0,0,0.2);}
+body.light main.col-main{background:rgba(255,255,255,0.2);}
 .col-header{padding:0 16px;height:53px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);position:sticky;top:0;z-index:5;}
+body.light .col-header{background:rgba(255,255,255,0.7);}
 .col-header h2{font-size:20px;font-weight:700;}
 .col-header .back-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:none;color:var(--text);cursor:pointer;font-size:18px;transition:background .2s;}
 .col-header .back-btn:hover{background:var(--glass-strong);}
@@ -109,6 +118,7 @@ main.col-main{height:100vh;border-right:1px solid var(--border);display:flex;fle
 aside.col-right{height:100vh;overflow-y:auto;padding:12px;}
 aside.col-right::-webkit-scrollbar{width:0;}
 .search-box{position:sticky;top:0;padding:0 0 12px;z-index:4;background:rgba(0,0,0,0.5);backdrop-filter:blur(20px);}
+body.light .search-box{background:rgba(255,255,255,0.7);}
 .search-wrap{display:flex;align-items:center;gap:12px;padding:0 16px;height:44px;border-radius:999px;background:var(--glass-strong);border:1px solid var(--border);}
 .search-wrap svg{width:18px;height:18px;color:var(--text-dim);}
 .search-wrap input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:15px;}
@@ -178,6 +188,71 @@ aside.col-right::-webkit-scrollbar{width:0;}
 .profile-tab:hover{background:var(--glass);}
 .profile-tab.active{color:var(--text);font-weight:700;}
 .profile-tab.active::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:4px;border-radius:999px;background:var(--accent);}
+
+/* ====== SETTINGS VIEW ====== */
+.settings-view{display:flex;flex-direction:column;}
+.settings-section{padding:16px 20px;border-bottom:1px solid var(--border);}
+.settings-section:last-child{border-bottom:none;}
+.settings-section h3{font-size:15px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;font-size:12px;}
+.setting-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px;cursor:pointer;transition:opacity .2s;}
+.setting-item:hover{opacity:.85;}
+.setting-item .s-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+.setting-item .s-icon{width:40px;height:40px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--border);display:grid;place-items:center;flex-shrink:0;}
+.setting-item .s-icon svg{width:20px;height:20px;stroke-width:1.8;}
+.setting-item .s-label{font-weight:600;font-size:15px;}
+.setting-item .s-desc{font-size:13px;color:var(--text-dim);margin-top:2px;}
+.setting-item .s-value{color:var(--text-dim);font-size:14px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.setting-item .s-chevron{color:var(--text-dim);flex-shrink:0;}
+
+/* Toggle switch */
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle .slider{position:absolute;inset:0;background:var(--glass-strong);border:1px solid var(--border-strong);border-radius:999px;cursor:pointer;transition:.25s;}
+.toggle .slider::before{content:"";position:absolute;height:16px;width:16px;left:3px;top:2px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 2px 4px rgba(0,0,0,.3);}
+.toggle input:checked + .slider{background:var(--accent);border-color:var(--accent);}
+.toggle input:checked + .slider::before{transform:translateX(20px);}
+
+/* Edit profile modal */
+.edit-modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:150;display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
+.edit-modal.open{display:flex;}
+.edit-modal-card{width:100%;max-width:560px;border-radius:16px;background:var(--bg);border:1px solid var(--border-strong);box-shadow:0 20px 60px rgba(0,0,0,0.6);overflow:hidden;}
+.edit-header{display:flex;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.edit-header button{background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;}
+.edit-header button:hover{background:var(--glass-strong);}
+.edit-header h3{flex:1;font-size:18px;font-weight:700;}
+.edit-save-btn{padding:8px 18px;border-radius:999px;border:none;background:var(--text);color:var(--bg);font-weight:700;cursor:pointer;font-size:14px;}
+.edit-save-btn:disabled{opacity:.5;cursor:not-allowed;}
+.edit-body{padding:20px;}
+.avatar-editor{display:flex;flex-direction:column;align-items:center;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.avatar-editor .avatar-big{position:relative;width:120px;height:120px;}
+.avatar-editor .avatar-big img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--border-strong);}
+.avatar-editor .avatar-big button{position:absolute;bottom:0;right:0;width:36px;height:36px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);color:#fff;cursor:pointer;display:grid;place-items:center;}
+.avatar-editor .avatar-hint{font-size:13px;color:var(--text-dim);}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;color:var(--text-dim);margin-bottom:6px;font-weight:600;}
+.field input,.field textarea{width:100%;padding:12px 14px;background:transparent;border:1px solid var(--border-strong);border-radius:8px;color:var(--text);font-size:15px;outline:none;font-family:inherit;transition:border-color .2s;}
+.field input:focus,.field textarea:focus{border-color:var(--accent);}
+.field textarea{resize:vertical;min-height:80px;}
+.field .counter{font-size:11px;color:var(--text-dim);text-align:right;margin-top:4px;}
+.field.warn input,.field.warn textarea{border-color:var(--danger);}
+
+/* Danger zone */
+.danger-item .s-icon{background:rgba(244,33,46,.1);border-color:rgba(244,33,46,.3);}
+.danger-item .s-icon svg{color:var(--danger);}
+.danger-item .s-label{color:var(--danger);}
+
+/* Confirm dialog */
+.confirm-dialog{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.confirm-dialog.open{display:flex;}
+.confirm-card{background:var(--bg);border:1px solid var(--border-strong);border-radius:16px;padding:24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.confirm-card h3{font-size:18px;font-weight:700;margin-bottom:10px;}
+.confirm-card p{color:var(--text-dim);font-size:14px;line-height:1.5;margin-bottom:20px;}
+.confirm-actions{display:flex;gap:10px;justify-content:flex-end;}
+.confirm-actions button{padding:10px 18px;border-radius:999px;border:none;font-weight:600;cursor:pointer;font-size:14px;}
+.btn-cancel{background:var(--glass-strong);border:1px solid var(--border-strong) !important;color:var(--text);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-primary{background:var(--accent);color:#fff;}
+
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);padding:12px 20px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:14px;box-shadow:0 6px 30px rgba(29,155,240,.5);z-index:200;opacity:0;transition:.4s cubic-bezier(.2,.7,.3,1);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .avatar{object-fit:cover;}
@@ -197,6 +272,7 @@ aside.col-right::-webkit-scrollbar{width:0;}
 @media (max-width:720px){
   #app{grid-template-columns:1fr;padding-bottom:60px;}
   aside.sidebar{position:fixed;bottom:0;left:0;right:0;height:60px;z-index:10;flex-direction:row;justify-content:space-around;padding:8px;border-right:none;border-top:1px solid var(--border);background:rgba(0,0,0,0.7);}
+  body.light aside.sidebar{background:rgba(255,255,255,0.9);}
   .brand,.post-btn,.profile-card,.nav-item .label{display:none;}
   .nav-item{padding:8px;border-radius:50%;}
 }
@@ -205,19 +281,13 @@ aside.col-right::-webkit-scrollbar{width:0;}
 <body>
 
 <div class="bg-mesh" aria-hidden="true">
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-  <div class="blob b3"></div>
-  <div class="blob b4"></div>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
 </div>
 
 <div id="app">
   <aside class="sidebar">
     <div>
-      <div class="brand">
-        <div class="brand-logo">X</div>
-        <div class="brand-name">Campus<span>X</span></div>
-      </div>
+      <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Campus<span>X</span></div></div>
       <div class="nav-item active" data-nav="home" onclick="app.switchNav('home')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9.5L12 2l9 7.5V20a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2V9.5z"/></svg>
         <span class="label">Home</span>
@@ -238,45 +308,33 @@ aside.col-right::-webkit-scrollbar{width:0;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
         <span class="label">Profile</span>
       </div>
+      <div class="nav-item" data-nav="settings" onclick="app.switchNav('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="label">Settings</span>
+      </div>
       <button class="post-btn" onclick="app.openComposer()"><span>Post</span></button>
     </div>
     <div class="profile-card" id="sidebar-profile" onclick="app.switchNav('profile')">
       <img class="avatar" id="sb-avatar" src="">
-      <div class="info">
-        <div class="name" id="sb-name">You</div>
-        <div class="handle" id="sb-handle">@you</div>
-      </div>
+      <div class="info"><div class="name" id="sb-name">You</div><div class="handle" id="sb-handle">@you</div></div>
       <div class="more">⋯</div>
     </div>
   </aside>
 
   <main class="col-main">
     <div id="view-home">
-      <div class="col-header">
-        <h2>Home</h2>
-        <div class="col-tabs">
-          <div class="col-tab active">For you</div>
-          <div class="col-tab">Following</div>
-        </div>
-      </div>
+      <div class="col-header"><h2>Home</h2><div class="col-tabs"><div class="col-tab active">For you</div><div class="col-tab">Following</div></div></div>
       <div class="scroll-area">
         <div class="composer">
           <img class="avatar" id="comp-avatar" src="">
           <div class="composer-body">
             <textarea class="composer-input" id="compose-text" placeholder="What is happening on campus?!" maxlength="280" rows="1"></textarea>
-            <div class="compose-preview hidden" id="compose-preview">
-              <img id="compose-preview-img" src="">
-              <button class="remove-preview" onclick="feed.clearImage()">✕</button>
-            </div>
+            <div class="compose-preview hidden" id="compose-preview"><img id="compose-preview-img" src=""><button class="remove-preview" onclick="feed.clearImage()">✕</button></div>
             <div class="composer-toolbar">
-              <button class="tool-btn" title="Upload image" onclick="document.getElementById('post-image-input').click()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-              </button>
+              <button class="tool-btn" title="Upload image" onclick="document.getElementById('post-image-input').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
               <input type="file" class="hidden-input" id="post-image-input" accept="image/*" onchange="feed.onImagePick(event)">
               <div class="tool-divider"></div>
-              <button class="tool-btn" title="Tag" onclick="feed.cycleTag()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg>
-              </button>
+              <button class="tool-btn" title="Tag" onclick="feed.cycleTag()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg></button>
               <span id="current-tag-label" style="font-size:12px;color:var(--text-dim);">📰 news</span>
               <button class="compose-post-btn" id="compose-btn" onclick="feed.post()" disabled>Post</button>
             </div>
@@ -287,13 +345,7 @@ aside.col-right::-webkit-scrollbar{width:0;}
     </div>
 
     <div id="view-chat" class="chat-view hidden">
-      <div class="col-header">
-        <h2>Messages</h2>
-        <div class="col-tabs" style="margin-left:auto;">
-          <div class="col-tab active">All</div>
-          <div class="col-tab">Requests</div>
-        </div>
-      </div>
+      <div class="col-header"><h2>Messages</h2><div class="col-tabs" style="margin-left:auto;"><div class="col-tab active">All</div><div class="col-tab">Requests</div></div></div>
       <div class="chat-list" id="chat-list"></div>
     </div>
 
@@ -301,10 +353,7 @@ aside.col-right::-webkit-scrollbar{width:0;}
       <div class="col-header">
         <button class="back-btn" onclick="app.switchNav('chat')">←</button>
         <img class="avatar" id="dm-avatar" src="">
-        <div>
-          <h3 id="dm-name">User</h3>
-          <div style="font-size:12px;color:var(--text-dim);">Active now</div>
-        </div>
+        <div><h3 id="dm-name">User</h3><div style="font-size:12px;color:var(--text-dim);">Active now</div></div>
       </div>
       <div class="dm-messages" id="dm-messages"></div>
       <div class="dm-input-area">
@@ -315,12 +364,7 @@ aside.col-right::-webkit-scrollbar{width:0;}
 
     <div id="view-explore" class="hidden">
       <div class="col-header"><h2>Explore</h2></div>
-      <div class="scroll-area">
-        <div style="padding:16px;">
-          <h3 style="margin-bottom:12px;font-size:20px;">Trending now on campus</h3>
-          <div id="explore-trends"></div>
-        </div>
-      </div>
+      <div class="scroll-area"><div style="padding:16px;"><h3 style="margin-bottom:12px;font-size:20px;">Trending now on campus</h3><div id="explore-trends"></div></div></div>
     </div>
 
     <div id="view-notifications" class="hidden">
@@ -331,80 +375,218 @@ aside.col-right::-webkit-scrollbar{width:0;}
     <div id="view-profile" class="profile-view hidden">
       <div class="col-header">
         <button class="back-btn" onclick="app.switchNav('home')">←</button>
-        <div>
-          <h2 id="prof-head-name">You</h2>
-          <div style="font-size:13px;color:var(--text-dim);" id="prof-head-posts">0 posts</div>
-        </div>
+        <div><h2 id="prof-head-name">You</h2><div style="font-size:13px;color:var(--text-dim);" id="prof-head-posts">0 posts</div></div>
       </div>
       <div class="scroll-area">
         <div class="profile-banner"></div>
         <div class="profile-info">
-          <div class="avatar-wrap" onclick="app.changeAvatar()" title="Change profile picture">
+          <div class="avatar-wrap" onclick="settings.openEdit()" title="Edit profile">
             <img class="avatar" id="prof-avatar" src="">
-            <div class="avatar-edit-badge">📷</div>
+            <div class="avatar-edit-badge">✎</div>
           </div>
           <div class="profile-actions">
-            <button class="icon-btn" onclick="app.logout()">Log out</button>
+            <button class="icon-btn" onclick="settings.openEdit()">Edit profile</button>
           </div>
           <div class="profile-name-row"><span class="name" id="prof-name">You</span></div>
           <div class="profile-handle" id="prof-handle">@you</div>
           <div class="profile-bio" id="prof-bio">Just a student vibing on campus.</div>
-          <div class="profile-meta">
-            <span>📍 <span id="prof-major">Student</span></span>
-            <span>📅 Joined August 2026</span>
-          </div>
-          <div class="profile-stats">
-            <div><b id="prof-following">142</b> <span>Following</span></div>
-            <div><b id="prof-followers">89</b> <span>Followers</span></div>
-          </div>
+          <div class="profile-meta"><span>📍 <span id="prof-major">Student</span></span><span>📅 Joined August 2026</span></div>
+          <div class="profile-stats"><div><b id="prof-following">142</b> <span>Following</span></div><div><b id="prof-followers">89</b> <span>Followers</span></div></div>
         </div>
-        <div class="profile-tabs">
-          <div class="profile-tab active">Posts</div>
-          <div class="profile-tab">Replies</div>
-          <div class="profile-tab">Media</div>
-          <div class="profile-tab">Likes</div>
-        </div>
+        <div class="profile-tabs"><div class="profile-tab active">Posts</div><div class="profile-tab">Replies</div><div class="profile-tab">Media</div><div class="profile-tab">Likes</div></div>
         <div id="prof-posts"></div>
+      </div>
+    </div>
+
+    <!-- ====== SETTINGS VIEW ====== -->
+    <div id="view-settings" class="settings-view hidden">
+      <div class="col-header"><h2>Settings</h2></div>
+      <div class="scroll-area">
+
+        <div class="settings-section">
+          <h3>Your Account</h3>
+          <div class="setting-item" onclick="settings.openEdit()">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div>
+              <div><div class="s-label">Edit profile</div><div class="s-desc">Name, bio, avatar, major</div></div>
+            </div>
+            <span class="s-chevron">›</span>
+          </div>
+          <div class="setting-item">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+              <div><div class="s-label">Email</div><div class="s-desc" id="settings-email">Not set</div></div>
+            </div>
+            <span class="s-value" id="settings-email-val">—</span>
+          </div>
+          <div class="setting-item">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+              <div><div class="s-label">Sign-in method</div><div class="s-desc" id="settings-auth-desc">—</div></div>
+            </div>
+            <span class="s-value" id="settings-auth-val">—</span>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Preferences</h3>
+          <div class="setting-item">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
+              <div><div class="s-label">Light mode</div><div class="s-desc">Switch between dark and light themes</div></div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="theme-toggle" onchange="settings.toggleTheme(this.checked)"><span class="slider"></span></label>
+          </div>
+          <div class="setting-item">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+              <div><div class="s-label">Notifications</div><div class="s-desc">Post likes, replies, and mentions</div></div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="notif-toggle" checked onchange="settings.toggleNotif(this.checked)"><span class="slider"></span></label>
+          </div>
+          <div class="setting-item">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+              <div><div class="s-label">Message requests</div><div class="s-desc">Allow messages from anyone on campus</div></div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="msg-toggle" checked onchange="settings.toggleMsg(this.checked)"><span class="slider"></span></label>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Privacy</h3>
+          <div class="setting-item">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+              <div><div class="s-label">Private profile</div><div class="s-desc">Only followers see your posts</div></div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="private-toggle" onchange="settings.togglePrivate(this.checked)"><span class="slider"></span></label>
+          </div>
+          <div class="setting-item">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+              <div><div class="s-label">Show email publicly</div><div class="s-desc">Display email on your profile</div></div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="emailpub-toggle" onchange="settings.toggleEmailPub(this.checked)"><span class="slider"></span></label>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Support</h3>
+          <div class="setting-item" onclick="settings.openAbout()">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+              <div><div class="s-label">About CampusX</div><div class="s-desc">Version, credits, legal</div></div>
+            </div>
+            <span class="s-chevron">›</span>
+          </div>
+          <div class="setting-item" onclick="app.logout()">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+              <div><div class="s-label">Log out</div><div class="s-desc">Sign out of this device</div></div>
+            </div>
+            <span class="s-chevron">›</span>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 style="color:var(--danger);">Danger Zone</h3>
+          <div class="setting-item danger-item" onclick="settings.confirmDelete()">
+            <div class="s-left">
+              <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/></svg></div>
+              <div><div class="s-label">Delete account</div><div class="s-desc">Permanently remove your profile and all posts</div></div>
+            </div>
+            <span class="s-chevron">›</span>
+          </div>
+        </div>
+
       </div>
     </div>
   </main>
 
   <aside class="col-right">
-    <div class="search-box">
-      <div class="search-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input placeholder="Search campus">
-      </div>
-    </div>
-    <div class="panel glass">
-      <div class="panel-head">What's happening</div>
-      <div id="trending-list"></div>
-    </div>
-    <div class="panel glass">
-      <div class="panel-head">Who to follow</div>
-      <div id="follow-list"></div>
-    </div>
-    <div class="footer-links">
-      <a href="#">Terms</a><a href="#">Privacy</a><a href="#">About</a>
-      <div style="flex-basis:100%;">© 2026 CampusX · Powered by Firebase</div>
-    </div>
+    <div class="search-box"><div class="search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Search campus"></div></div>
+    <div class="panel glass"><div class="panel-head">What's happening</div><div id="trending-list"></div></div>
+    <div class="panel glass"><div class="panel-head">Who to follow</div><div id="follow-list"></div></div>
+    <div class="footer-links"><a href="#">Terms</a><a href="#">Privacy</a><a href="#">About</a><div style="flex-basis:100%;">© 2026 CampusX · v1.0</div></div>
   </aside>
 </div>
 
+<!-- Login modal -->
 <div class="modal-overlay" id="auth-modal">
   <div class="modal">
-    <div class="modal-hero">
-      <div class="logo-big">X</div>
-      <h2>Happening now</h2>
-      <p style="color:var(--text-dim);margin-top:8px;">Join CampusX today.</p>
-    </div>
+    <div class="modal-hero"><div class="logo-big">X</div><h2>Happening now</h2><p style="color:var(--text-dim);margin-top:8px;">Join CampusX today.</p></div>
     <div class="modal-body">
       <div id="google-signin-button"></div>
       <div class="divider-row">or</div>
-      <button class="x-btn" id="guest-signin" onclick="authModule.signInAnonymously()">Continue as guest</button>
-      <p style="font-size:12px;color:var(--text-dim);margin-top:16px;line-height:1.5;">
-        By signing in you agree to the <a href="#" style="color:var(--accent);">Terms of Service</a>.
-      </p>
+      <button class="x-btn" onclick="authModule.signInAnonymously()">Continue as guest</button>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:16px;line-height:1.5;">By signing in you agree to the <a href="#" style="color:var(--accent);">Terms of Service</a>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Edit profile modal -->
+<div class="edit-modal" id="edit-modal">
+  <div class="edit-modal-card">
+    <div class="edit-header">
+      <button onclick="settings.closeEdit()">✕</button>
+      <h3>Edit profile</h3>
+      <button class="edit-save-btn" id="edit-save" onclick="settings.saveProfile()">Save</button>
+    </div>
+    <div class="edit-body">
+      <div class="avatar-editor">
+        <div class="avatar-big">
+          <img id="edit-avatar" src="">
+          <button onclick="document.getElementById('avatar-input').click()">📷</button>
+          <input type="file" class="hidden-input" id="avatar-input" accept="image/*" onchange="settings.onAvatarPick(event)">
+        </div>
+        <div class="avatar-hint">Click the camera to change your photo</div>
+      </div>
+      <div class="field">
+        <label>Name</label>
+        <input id="edit-name" maxlength="30" placeholder="Your name">
+        <div class="counter"><span id="name-count">0</span>/30</div>
+      </div>
+      <div class="field">
+        <label>Handle</label>
+        <input id="edit-handle" maxlength="15" placeholder="username">
+        <div class="counter"><span id="handle-count">0</span>/15</div>
+      </div>
+      <div class="field">
+        <label>Bio</label>
+        <textarea id="edit-bio" maxlength="160" placeholder="Tell campus about yourself"></textarea>
+        <div class="counter"><span id="bio-count">0</span>/160</div>
+      </div>
+      <div class="field">
+        <label>Major / Role</label>
+        <input id="edit-major" maxlength="40" placeholder="e.g. Computer Science">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm dialog -->
+<div class="confirm-dialog" id="confirm-dialog">
+  <div class="confirm-card">
+    <h3 id="confirm-title">Are you sure?</h3>
+    <p id="confirm-msg">This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="settings.closeConfirm()">Cancel</button>
+      <button class="btn-danger" id="confirm-action">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- About dialog -->
+<div class="confirm-dialog" id="about-dialog">
+  <div class="confirm-card" style="text-align:center;">
+    <div style="font-size:40px;margin-bottom:10px;">🎓</div>
+    <h3>CampusX</h3>
+    <p style="margin-bottom:8px;">Version 1.0.0</p>
+    <p style="margin-bottom:16px;">The student social network built with Firebase and love.</p>
+    <div style="font-size:12px;color:var(--text-dim);margin-bottom:20px;">© 2026 CampusX. All rights reserved.</div>
+    <div class="confirm-actions" style="justify-content:center;">
+      <button class="btn-primary" onclick="utils.$('#about-dialog').classList.remove('open')">Close</button>
     </div>
   </div>
 </div>
@@ -427,9 +609,7 @@ const utils = {
   $(s) { return document.querySelector(s); },
   $$(s) { return [...document.querySelectorAll(s)]; },
   escapeHTML(s) {
-    return String(s || '').replace(/[&<>"']/g, c =>
-      ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])
-    );
+    return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
   },
   fmtCount(n) {
     if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
@@ -476,6 +656,7 @@ const authModule = {
         app.switchNav('home');
         feed.startListener();
         chat.loadInbox();
+        settings.updateSettingsUI();
       } else {
         this.currentUser = null;
         this.userProfile = null;
@@ -489,16 +670,20 @@ const authModule = {
     const ref = db.collection('users').doc(user.uid);
     const snap = await ref.get();
     if (!snap.exists) {
-      const handle = (user.displayName || user.email.split('@')[0])
+      const handle = (user.displayName || user.email?.split('@')[0] || 'user')
         .toLowerCase().replace(/[^a-z0-9]/g, '') || ('user' + Math.floor(Math.random()*9999));
       await ref.set({
         uid: user.uid,
         displayName: user.displayName || 'Student',
         handle,
-        email: user.email,
+        email: user.email || null,
         photoURL: user.photoURL || null,
+        avatarUrl: null,
         major: 'Student',
         bio: '',
+        isAnonymous: user.isAnonymous || false,
+        authProvider: user.isAnonymous ? 'guest' : 'google',
+        prefs: { theme: 'dark', notifications: true, messages: true, private: false, emailPublic: false },
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     }
@@ -509,19 +694,16 @@ const authModule = {
   renderGoogleButton() {
     const container = utils.$('#google-signin-button');
     if (!container) return;
-    const ui = new firebaseui.auth.AuthUI(auth);
-    ui.start('#google-signin-button', {
-      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
-      signInFlow: 'popup',
-      callbacks: {
-        signInSuccessWithAuthResult: () => false
-      }
-    });
-    setTimeout(() => {
-      if (!container.innerHTML.trim()) {
-        container.innerHTML = `<button class="x-btn" onclick="authModule.signInGoogle()">Sign in with Google</button>`;
-      }
-    }, 500);
+    try {
+      const ui = new firebaseui.auth.AuthUI(auth);
+      ui.start('#google-signin-button', {
+        signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
+        signInFlow: 'popup',
+        callbacks: { signInSuccessWithAuthResult: () => false }
+      });
+    } catch(e) {
+      container.innerHTML = `<button class="x-btn" onclick="authModule.signInGoogle()">Sign in with Google</button>`;
+    }
   },
 
   signInGoogle() {
@@ -539,6 +721,169 @@ const authModule = {
     if (!confirm('Log out of CampusX?')) return;
     auth.signOut();
     utils.toast('Signed out');
+  },
+
+  async deleteAccount() {
+    const uid = this.currentUser.uid;
+    try {
+      // Delete all posts by this user
+      const postsSnap = await db.collection('posts').where('authorUid', '==', uid).get();
+      const batch = db.batch();
+      postsSnap.docs.forEach(d => batch.delete(d.ref));
+      // Delete user doc
+      batch.delete(db.collection('users').doc(uid));
+      await batch.commit();
+      // Delete Firebase auth account
+      await this.currentUser.delete();
+      utils.toast('Account deleted');
+    } catch (err) {
+      console.error(err);
+      utils.toast('Could not delete. Please re-login and try again.');
+    }
+  }
+};
+
+// ========== SETTINGS (NEW!) ==========
+const settings = {
+  tempAvatar: null, // base64 of pending avatar upload
+
+  updateSettingsUI() {
+    const p = authModule.userProfile;
+    const u = authModule.currentUser;
+    if (!p || !u) return;
+    utils.$('#settings-email-val').textContent = u.email || '—';
+    utils.$('#settings-email').textContent = u.email ? 'Verified email on file' : 'No email (guest)';
+    utils.$('#settings-auth-val').textContent = p.authProvider === 'google' ? 'Google' : 'Guest';
+    utils.$('#settings-auth-desc').textContent = p.authProvider === 'google' ? 'Signed in with Google' : 'Anonymous guest account';
+    // Load preferences
+    const prefs = p.prefs || {};
+    utils.$('#theme-toggle').checked = prefs.theme === 'light';
+    utils.$('#notif-toggle').checked = prefs.notifications !== false;
+    utils.$('#msg-toggle').checked = prefs.messages !== false;
+    utils.$('#private-toggle').checked = prefs.private === true;
+    utils.$('#emailpub-toggle').checked = prefs.emailPublic === true;
+    // Apply theme
+    document.body.classList.toggle('light', prefs.theme === 'light');
+  },
+
+  async savePrefs(updates) {
+    const p = authModule.userProfile;
+    const newPrefs = { ...(p.prefs || {}), ...updates };
+    await db.collection('users').doc(authModule.currentUser.uid).update({ prefs: newPrefs });
+    authModule.userProfile.prefs = newPrefs;
+  },
+
+  toggleTheme(isLight) {
+    document.body.classList.toggle('light', isLight);
+    this.savePrefs({ theme: isLight ? 'light' : 'dark' });
+    utils.toast(isLight ? 'Light mode on' : 'Dark mode on');
+  },
+
+  toggleNotif(on) {
+    this.savePrefs({ notifications: on });
+    utils.toast(on ? 'Notifications on' : 'Notifications off');
+  },
+
+  toggleMsg(on) {
+    this.savePrefs({ messages: on });
+    utils.toast(on ? 'Messages from anyone' : 'Messages from followers only');
+  },
+
+  togglePrivate(on) {
+    this.savePrefs({ private: on });
+    utils.toast(on ? 'Profile is now private' : 'Profile is public');
+  },
+
+  toggleEmailPub(on) {
+    this.savePrefs({ emailPublic: on });
+    utils.toast(on ? 'Email visible on profile' : 'Email hidden');
+  },
+
+  openEdit() {
+    const p = authModule.userProfile;
+    if (!p) return;
+    utils.$('#edit-avatar').src = utils.getAvatar(authModule.currentUser);
+    utils.$('#edit-name').value = p.displayName || '';
+    utils.$('#edit-handle').value = p.handle || '';
+    utils.$('#edit-bio').value = p.bio || '';
+    utils.$('#edit-major').value = p.major || '';
+    this.tempAvatar = null;
+    this.updateCounters();
+    utils.$('#edit-modal').classList.add('open');
+    // Wire up counters
+    ['name','handle','bio'].forEach(f => {
+      const el = utils.$('#edit-' + f);
+      el.oninput = () => this.updateCounters();
+    });
+  },
+
+  closeEdit() {
+    utils.$('#edit-modal').classList.remove('open');
+  },
+
+  updateCounters() {
+    utils.$('#name-count').textContent = utils.$('#edit-name').value.length;
+    utils.$('#handle-count').textContent = utils.$('#edit-handle').value.length;
+    utils.$('#bio-count').textContent = utils.$('#edit-bio').value.length;
+  },
+
+  onAvatarPick(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { utils.toast('Image too large (max 2MB)'); return; }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      this.tempAvatar = ev.target.result;
+      utils.$('#edit-avatar').src = this.tempAvatar;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  },
+
+  async saveProfile() {
+    const name = utils.$('#edit-name').value.trim();
+    let handle = utils.$('#edit-handle').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+    const bio = utils.$('#edit-bio').value.trim();
+    const major = utils.$('#edit-major').value.trim();
+
+    if (!name) { utils.toast('Name is required'); return; }
+    if (!handle) handle = name.toLowerCase().replace(/\s+/g, '');
+    if (handle.length < 3) { utils.toast('Handle must be 3+ chars'); return; }
+
+    const updates = { displayName: name, handle, bio, major: major || 'Student' };
+    if (this.tempAvatar) updates.avatarUrl = this.tempAvatar;
+
+    try {
+      await db.collection('users').doc(authModule.currentUser.uid).update(updates);
+      authModule.userProfile = { ...authModule.userProfile, ...updates };
+      app.updateUserUI();
+      this.closeEdit();
+      utils.toast('Profile saved ✓');
+    } catch (err) {
+      console.error(err);
+      utils.toast('Failed to save: ' + err.message);
+    }
+  },
+
+  openAbout() {
+    utils.$('#about-dialog').classList.add('open');
+  },
+
+  confirmDelete() {
+    utils.$('#confirm-title').textContent = 'Delete your account?';
+    utils.$('#confirm-msg').textContent = 'This will permanently delete your profile, all your posts, and all your likes. This cannot be undone.';
+    utils.$('#confirm-action').textContent = 'Delete account';
+    utils.$('#confirm-action').onclick = () => this.doDelete();
+    utils.$('#confirm-dialog').classList.add('open');
+  },
+
+  async doDelete() {
+    utils.$('#confirm-dialog').classList.remove('open');
+    await authModule.deleteAccount();
+  },
+
+  closeConfirm() {
+    utils.$('#confirm-dialog').classList.remove('open');
   }
 };
 
@@ -550,10 +895,7 @@ const feed = {
     { id:'lost', label:'❓ lost & found', cls:'tag-lost' },
     { id:'alert', label:'🚨 alert', cls:'tag-alert' }
   ],
-  currentTagIdx: 0,
-  pendingImage: null,
-  posts: [],
-  unsubscribe: null,
+  currentTagIdx: 0, pendingImage: null, posts: [], unsubscribe: null,
 
   cycleTag() {
     this.currentTagIdx = (this.currentTagIdx + 1) % this.TAGS.length;
@@ -562,27 +904,17 @@ const feed = {
 
   startListener() {
     if (this.unsubscribe) this.unsubscribe();
-    this.unsubscribe = db.collection('posts')
-      .orderBy('createdAt', 'desc')
-      .limit(50)
+    this.unsubscribe = db.collection('posts').orderBy('createdAt', 'desc').limit(50)
       .onSnapshot(snap => {
         this.posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         this.render();
-      }, err => {
-        console.error(err);
-        utils.toast('Feed error: ' + err.message);
-      });
+      }, err => { console.error(err); utils.toast('Feed error: ' + err.message); });
   },
 
   render() {
     const list = utils.$('#feed-list');
     if (!this.posts.length) {
-      list.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">✨</div>
-          <h3>Your feed is empty</h3>
-          <p>Be the first to share what's happening on campus.</p>
-        </div>`;
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon">✨</div><h3>Your feed is empty</h3><p>Be the first to share what's happening on campus.</p></div>`;
       return;
     }
     list.innerHTML = this.posts.map(p => this.renderPost(p)).join('');
@@ -627,9 +959,7 @@ const feed = {
     });
   },
 
-  async toggleLike(id, btn) {
-    const post = this.posts.find(p => p.id === id);
-    if (!post) return;
+  async toggleLike(id) {
     const likedRef = db.collection('posts').doc(id).collection('likes').doc(authModule.currentUser.uid);
     const likedSnap = await likedRef.get();
     const postRef = db.collection('posts').doc(id);
@@ -642,18 +972,15 @@ const feed = {
     }
   },
 
-  async toggleRepost(id, btn) {
-    const postRef = db.collection('posts').doc(id);
-    const post = this.posts.find(p => p.id === id);
-    if (!post) return;
+  async toggleRepost(id) {
+    const post = this.posts.find(p => p.id === id); if (!post) return;
     const delta = post.reposted ? -1 : 1;
-    await postRef.update({ repostCount: firebase.firestore.FieldValue.increment(delta) });
+    await db.collection('posts').doc(id).update({ repostCount: firebase.firestore.FieldValue.increment(delta) });
     utils.toast(delta > 0 ? 'Reposted' : 'Undone');
   },
 
   onImagePick(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+    const file = e.target.files[0]; if (!file) return;
     if (file.size > 2 * 1024 * 1024) { utils.toast('Image too large (max 2MB)'); return; }
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -676,113 +1003,74 @@ const feed = {
     const txt = utils.$('#compose-text').value.trim();
     if (!txt && !this.pendingImage) return;
     if (!authModule.currentUser || !authModule.userProfile) return;
-
-    const u = authModule.currentUser;
-    const p = authModule.userProfile;
-    const tag = this.TAGS[this.currentTagIdx];
-
+    const u = authModule.currentUser, p = authModule.userProfile, tag = this.TAGS[this.currentTagIdx];
     try {
       await db.collection('posts').add({
-        authorUid: u.uid,
-        authorName: p.displayName,
-        authorHandle: p.handle,
-        authorPhoto: utils.getAvatar(u),
-        tag: tag.id,
-        content: txt,
+        authorUid: u.uid, authorName: p.displayName, authorHandle: p.handle,
+        authorPhoto: utils.getAvatar(u), tag: tag.id, content: txt,
         imageUrl: this.pendingImage || null,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        likeCount: 0,
-        repostCount: 0,
-        replyCount: 0
+        likeCount: 0, repostCount: 0, replyCount: 0
       });
       utils.$('#compose-text').value = '';
       this.clearImage();
       utils.$('#compose-btn').disabled = true;
       utils.toast('Your post was sent.');
-    } catch (err) {
-      console.error(err);
-      utils.toast('Failed to post: ' + err.message);
-    }
+    } catch (err) { console.error(err); utils.toast('Failed to post: ' + err.message); }
   }
 };
 
-// Wire composer
 (function wireComposer() {
-  const ta = utils.$('#compose-text');
-  const btn = utils.$('#compose-btn');
+  const ta = utils.$('#compose-text'), btn = utils.$('#compose-btn');
   if (!ta) return;
   ta.addEventListener('input', () => {
     btn.disabled = !ta.value.trim() && !feed.pendingImage;
     ta.style.height = 'auto';
     ta.style.height = Math.min(ta.scrollHeight, 200) + 'px';
   });
-  ta.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') feed.post();
-  });
+  ta.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') feed.post(); });
 })();
 
 // ========== CHAT ==========
 const chat = {
-  inbox: [],
-  currentId: null,
-  unsubscribe: null,
-
+  inbox: [], currentId: null,
   loadInbox() {
     this.inbox = [
       { id: 'welcome', name: 'CampusX Team', photo: null,
         preview: 'Welcome! Start chatting with other students.',
-        time: 'just now', messages: [
-          { sender: 'them', text: 'Welcome to CampusX! Tap any conversation to reply.', time: Date.now() }
-        ]}
+        time: 'just now', messages: [{ sender: 'them', text: 'Welcome to CampusX!', time: Date.now() }]}
     ];
     this.renderInbox();
   },
-
   renderInbox() {
     const list = utils.$('#chat-list');
     list.innerHTML = this.inbox.map(c => `
       <div class="chat-row" data-cid="${c.id}">
         <img class="avatar" src="${c.photo || utils.fallbackAvatar(c.name)}">
-        <div class="info">
-          <div class="top"><span class="name">${utils.escapeHTML(c.name)}</span><span class="time">${c.time}</span></div>
-          <div class="preview">${utils.escapeHTML(c.preview)}</div>
-        </div>
-      </div>
-    `).join('');
-    list.querySelectorAll('.chat-row').forEach(r => {
-      r.onclick = () => this.open(r.dataset.cid);
-    });
+        <div class="info"><div class="top"><span class="name">${utils.escapeHTML(c.name)}</span><span class="time">${c.time}</span></div><div class="preview">${utils.escapeHTML(c.preview)}</div></div>
+      </div>`).join('');
+    list.querySelectorAll('.chat-row').forEach(r => r.onclick = () => this.open(r.dataset.cid));
   },
-
   open(id) {
     this.currentId = id;
-    const c = this.inbox.find(x => x.id === id);
-    if (!c) return;
+    const c = this.inbox.find(x => x.id === id); if (!c) return;
     utils.$('#view-chat').classList.add('hidden');
     utils.$('#view-dm').classList.remove('hidden');
     utils.$('#dm-avatar').src = c.photo || utils.fallbackAvatar(c.name);
     utils.$('#dm-name').textContent = c.name;
     this.renderMessages(c.messages);
   },
-
   renderMessages(msgs) {
     const box = utils.$('#dm-messages');
-    box.innerHTML = msgs.map(m => `
-      <div class="dm-msg ${m.sender}">${utils.escapeHTML(m.text)}</div>
-    `).join('');
+    box.innerHTML = msgs.map(m => `<div class="dm-msg ${m.sender}">${utils.escapeHTML(m.text)}</div>`).join('');
     box.scrollTop = box.scrollHeight;
   },
-
   send() {
-    const input = utils.$('#dm-input');
-    const txt = input.value.trim();
+    const input = utils.$('#dm-input'), txt = input.value.trim();
     if (!txt || !this.currentId) return;
     const c = this.inbox.find(x => x.id === this.currentId);
     c.messages.push({ sender: 'me', text: txt, time: Date.now() });
-    c.preview = txt;
-    input.value = '';
-    this.renderMessages(c.messages);
-
+    c.preview = txt; input.value = ''; this.renderMessages(c.messages);
     setTimeout(() => {
       const replies = ['lol','facts','omg yes','brb','see u there','same'];
       c.messages.push({ sender: 'them', text: replies[Math.floor(Math.random()*replies.length)], time: Date.now() });
@@ -790,7 +1078,6 @@ const chat = {
     }, 1400 + Math.random() * 1500);
   }
 };
-
 utils.$('#dm-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') chat.send(); });
 
 // ========== APP ==========
@@ -800,10 +1087,8 @@ const app = {
     this.renderTrends();
     this.renderFollows();
   },
-
   updateUserUI() {
-    const u = authModule.currentUser;
-    const p = authModule.userProfile;
+    const u = authModule.currentUser, p = authModule.userProfile;
     if (!u || !p) return;
     const ava = utils.getAvatar(u);
     utils.$('#sb-avatar').src = ava;
@@ -817,62 +1102,41 @@ const app = {
     utils.$('#prof-bio').textContent = p.bio || 'Just a student vibing on campus.';
     utils.$('#prof-head-name').textContent = p.displayName;
   },
-
   switchNav(view) {
     utils.$$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === view));
-    ['home','chat','dm','explore','notifications','profile'].forEach(v => {
-      const el = utils.$(`#view-${v}`);
-      if (el) el.classList.add('hidden');
+    ['home','chat','dm','explore','notifications','profile','settings'].forEach(v => {
+      const el = utils.$(`#view-${v}`); if (el) el.classList.add('hidden');
     });
     utils.$(`#view-${view}`).classList.remove('hidden');
     if (view === 'chat') chat.renderInbox();
     if (view === 'profile') this.renderProfile();
     if (view === 'explore') this.renderExploreTrends();
+    if (view === 'settings') settings.updateSettingsUI();
   },
-
-  openComposer() {
-    this.switchNav('home');
-    utils.$('#compose-text').focus();
-  },
-
+  openComposer() { this.switchNav('home'); utils.$('#compose-text').focus(); },
   renderTrends() {
-    const list = utils.$('#trending-list');
-    if (!list) return;
+    const list = utils.$('#trending-list'); if (!list) return;
     const trends = [
       { cat:'Campus · Trending', title:'#FinalsWeek', count:'12.4K posts' },
       { cat:'Student Life', title:'Library Hours', count:'8,902 posts' },
       { cat:'Sports', title:'Kestrels Win', count:'5,201 posts' },
       { cat:'Trending', title:'#FreeCoffee', count:'1,820 posts' }
     ];
-    list.innerHTML = trends.map(t => `
-      <div class="trend">
-        <div class="trend-meta">${t.cat}</div>
-        <div class="trend-title">${t.title}</div>
-        <div class="trend-count">${t.count}</div>
-      </div>`).join('');
+    list.innerHTML = trends.map(t => `<div class="trend"><div class="trend-meta">${t.cat}</div><div class="trend-title">${t.title}</div><div class="trend-count">${t.count}</div></div>`).join('');
   },
-
   renderExploreTrends() {
-    const list = utils.$('#explore-trends');
-    if (!list) return;
-    this.renderTrends();
+    const list = utils.$('#explore-trends'); if (!list) return;
     list.innerHTML = utils.$('#trending-list').innerHTML;
   },
-
   renderFollows() {
-    const list = utils.$('#follow-list');
-    if (!list) return;
+    const list = utils.$('#follow-list'); if (!list) return;
     const follows = [
       { name:'Campus Daily', handle:'@campusdaily' },
       { name:'The Quad Times', handle:'@quadtimes' },
       { name:'Residence Life', handle:'@reslife' }
     ];
     list.innerHTML = follows.map(f => `
-      <div class="who-follow">
-        <img class="avatar" src="${utils.fallbackAvatar(f.name)}">
-        <div class="info"><div class="name">${f.name}</div><div class="handle">${f.handle}</div></div>
-        <button class="follow-btn">Follow</button>
-      </div>`).join('');
+      <div class="who-follow"><img class="avatar" src="${utils.fallbackAvatar(f.name)}"><div class="info"><div class="name">${f.name}</div><div class="handle">${f.handle}</div></div><button class="follow-btn">Follow</button></div>`).join('');
     list.querySelectorAll('.follow-btn').forEach(b => {
       b.onclick = () => {
         if (b.classList.contains('following')) { b.classList.remove('following'); b.textContent='Follow'; }
@@ -880,37 +1144,20 @@ const app = {
       };
     });
   },
-
   async renderProfile() {
     if (!authModule.userProfile) return;
-    const snap = await db.collection('posts')
-      .where('authorUid', '==', authModule.currentUser.uid)
-      .orderBy('createdAt', 'desc')
-      .get();
+    const snap = await db.collection('posts').where('authorUid', '==', authModule.currentUser.uid).orderBy('createdAt', 'desc').get();
     const myPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     utils.$('#prof-head-posts').textContent = myPosts.length + ' post' + (myPosts.length !== 1 ? 's' : '');
     const list = utils.$('#prof-posts');
-    if (!myPosts.length) {
-      list.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><h3>No posts yet</h3><p>When you post, they'll show up here.</p></div>`;
-      return;
-    }
+    if (!myPosts.length) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><h3>No posts yet</h3><p>When you post, they'll show up here.</p></div>`; return; }
     list.innerHTML = myPosts.map(p => feed.renderPost(p)).join('');
     feed.attachHandlers(list);
   },
-
-  changeAvatar() {
-    utils.toast('Upload a new avatar: coming in v2. For now, change your Google profile photo.');
-  },
-
-  logout() {
-    authModule.logout();
-  }
+  logout() { authModule.logout(); }
 };
 
-// Boot
-document.addEventListener('DOMContentLoaded', () => {
-  app.init();
-});
+document.addEventListener('DOMContentLoaded', () => { app.init(); });
 </script>
 
 </body>
